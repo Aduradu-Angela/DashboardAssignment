@@ -1,10 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosNotifications } from "react-icons/io";
 import { CiLock } from "react-icons/ci";
 import '../index.css';
-import inventoryData from '../data/inventoryData.json';
+import inventoryDataJson from '../data/inventoryData.json';
+import Modal from './Modal';
+
+const statusStyles = {
+  green: "text-green-700 bg-green-100",
+  red: "text-red-700 bg-red-100",
+  yellow: "text-yellow-700 bg-yellow-100"
+};
 
 const Inventory = () => {
+  const [inventoryData, setInventoryData] = useState(inventoryDataJson);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+  const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+
+  const [formData, setFormData] = useState({
+    productName: "",
+    category: "",
+    sku: "",
+    incoming: 0,
+    stock: 0,
+    status: "In stock",
+    statusColor: "green",
+    price: 0
+  });
+
+  const handleSaveProduct = () => {
+    if (isEditMode && editIndex !== null) {
+      const updatedList = [...inventoryData];
+      updatedList[editIndex] = formData;
+      setInventoryData(updatedList);
+      setIsEditMode(false);
+      setEditIndex(null);
+    } else {
+      setInventoryData([...inventoryData, formData]);
+    }
+
+    setFormData({
+      productName: "",
+      category: "",
+      sku: "",
+      incoming: 0,
+      stock: 0,
+      status: "In stock",
+      statusColor: "green",
+      price: 0
+    });
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="ml-[300px] bg-[#F6F6F6]">
       {/* NAVBAR */}
@@ -22,7 +70,25 @@ const Inventory = () => {
         <div className='flex gap-[10px]'>
           <button className='bg-[#fff] font-bold p-[8px] rounded-md border border-gray-200'>Import</button>
           <button className='bg-[#fff] font-bold p-[8px] rounded-md border border-gray-200'>Export</button>
-          <button className='bg-[#5627D2] text-white font-bold p-[8px] rounded-md'>+ Add Product</button>
+          <button
+            onClick={() => {
+              setIsEditMode(false);
+              setFormData({
+                productName: "",
+                category: "",
+                sku: "",
+                incoming: 0,
+                stock: 0,
+                status: "In stock",
+                statusColor: "green",
+                price: 0
+              });
+              setIsModalOpen(true);
+            }}
+            className='bg-[#5627D2] text-white font-bold p-[8px] rounded-md'
+          >
+            + Add Product
+          </button>
         </div>
       </div>
 
@@ -96,7 +162,7 @@ const Inventory = () => {
           </thead>
           <tbody className="text-gray-700">
             {inventoryData.map((item, index) => (
-              <tr key={index} className="bg-white shadow-sm rounded-md">
+              <tr key={index} className="bg-white shadow-sm rounded-md relative">
                 <td className="pl-[15px] py-2"><input type="checkbox" /></td>
                 <td className="py-2">{item.productName}</td>
                 <td className="py-2">{item.category}</td>
@@ -104,29 +170,57 @@ const Inventory = () => {
                 <td className="py-2">{item.incoming}</td>
                 <td className="py-2">{item.stock}</td>
                 <td className="py-2">
-                  <span className={`inline-block px-2 py-1 text-${item.statusColor}-700 bg-${item.statusColor}-100 rounded-full text-xs`}>
+                  <span className={`inline-block px-2 py-1 rounded-full text-xs ${statusStyles[item.statusColor]}`}>
                     {item.status}
                   </span>
                 </td>
-                <td className="py-2">${item.price}</td>
-                <td className="py-2"><span className="text-xl">⋯</span></td>
+                                <td className="py-2">${item.price}</td>
+                <td className="py-2 relative">
+                  <button onClick={() => setActiveMenuIndex(index)} className="text-xl">⋯</button>
+                  {activeMenuIndex === index && (
+                    <div className="absolute right-0 mt-2 w-[100px] bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                      <button
+                        className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={() => {
+                          const updatedList = inventoryData.filter((_, i) => i !== index);
+                          setInventoryData(updatedList);
+                          setActiveMenuIndex(null);
+                        }}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={() => {
+                          setFormData(item);
+                          setEditIndex(index);
+                          setIsEditMode(true);
+                          setIsModalOpen(true);
+                          setActiveMenuIndex(null);
+                        }}
+                      >
+                        Update
+                      </button>
+                    </div>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
 
         {/* PAGINATION */}
-        <div className='flex items-center gap-[150px]'>
-          <div className='flex items-center mt-[20px]'>
-            <p className='text-[15px] font-bold'>Showing 1 - 10 of 45 entries</p>
-            <select className="appearance-none px-[10px] py-[5px] border border-gray-200 rounded-md cursor-pointer">
+        <div className='flex items-center justify-between mt-[20px]'>
+          <div className='flex items-center'>
+            <p className='text-[15px] font-bold'>Showing 1 - 10 of {inventoryData.length} entries</p>
+            <select className="appearance-none px-[10px] py-[5px] border border-gray-200 rounded-md cursor-pointer ml-4">
               <option selected>10</option>
               <option>20</option>
               <option>30</option>
               <option>40</option>
             </select>
           </div>
-          <div className='flex gap-[30px]'>
+          <div className='flex gap-[10px]'>
             <button className='p-[10px] border border-gray-500 rounded-md'>Previous</button>
             <button className='px-[10px] py-[5px] border border-gray-400 rounded-md'>1</button>
             <button className='px-[10px] py-[5px] border border-gray-400 rounded-md'>2</button>
@@ -136,6 +230,19 @@ const Inventory = () => {
           </div>
         </div>
       </div>
+
+      {/* MODAL */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setIsEditMode(false);
+          setEditIndex(null);
+        }}
+        onSave={handleSaveProduct}
+        formData={formData}
+        setFormData={setFormData}
+      />
     </div>
   );
 };
