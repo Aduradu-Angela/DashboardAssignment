@@ -9,7 +9,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
         <h2 className="text-xl font-bold mb-4">Add New Product</h2>
 
-        {/* Product Name */}
         <label className="block mb-2 font-medium">Product Name</label>
         <input
           type="text"
@@ -18,7 +17,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           className="border w-full px-3 py-2 rounded mb-4"
         />
 
-        {/* Category */}
         <label className="block mb-2 font-medium">Category</label>
         <input
           type="text"
@@ -27,7 +25,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           className="border w-full px-3 py-2 rounded mb-4"
         />
 
-        {/* SKU */}
         <label className="block mb-2 font-medium">SKU</label>
         <input
           type="text"
@@ -36,7 +33,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           className="border w-full px-3 py-2 rounded mb-4"
         />
 
-        {/* Incoming */}
         <label className="block mb-2 font-medium">Incoming</label>
         <input
           type="number"
@@ -45,7 +41,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           className="border w-full px-3 py-2 rounded mb-4"
         />
 
-        {/* Stock */}
         <label className="block mb-2 font-medium">Stock</label>
         <input
           type="number"
@@ -54,7 +49,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           className="border w-full px-3 py-2 rounded mb-4"
         />
 
-        {/* Status */}
         <label className="block mb-2 font-medium">Status</label>
         <select
           value={formData.status}
@@ -77,7 +71,6 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           <option>Out of stock</option>
         </select>
 
-        {/* Price */}
         <label className="block mb-2 font-medium">Price</label>
         <input
           type="number"
@@ -86,20 +79,9 @@ const Modal = ({ isOpen, onClose, onSave, formData, setFormData }) => {
           className="border w-full px-3 py-2 rounded mb-4"
         />
 
-        {/* Buttons */}
         <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onSave}
-            className="bg-[#5627D2] text-white px-4 py-2 rounded hover:bg-[#4a21b0]"
-          >
-            Save
-          </button>
+          <button onClick={onClose} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"> Cancel </button>
+          <button onClick={onSave} className="bg-[#5627D2] text-white px-4 py-2 rounded hover:bg-[#4a21b0]" >Save </button>
         </div>
       </div>
     </div>

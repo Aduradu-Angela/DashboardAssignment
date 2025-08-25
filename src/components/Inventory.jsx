@@ -55,7 +55,6 @@ const Inventory = () => {
 
   return (
     <div className="ml-[300px] bg-[#F6F6F6]">
-      {/* NAVBAR */}
       <nav className='flex justify-between items-center bg-[#F6F6F6] p-[10px]'>
         <input type="text" placeholder="Search" className="border border-gray-300 rounded-md py-[5px] px-[10px] w-[250px]" />
         <div className='flex gap-[20px] items-center'>
@@ -64,7 +63,6 @@ const Inventory = () => {
         </div>
       </nav>
 
-      {/* HEADER */}
       <div className='flex justify-between items-center px-[20px] pb-[10px] bg-[#F6F6F6]'>
         <p className='font-bold text-2xl'>Inventory</p>
         <div className='flex gap-[10px]'>
@@ -92,7 +90,6 @@ const Inventory = () => {
         </div>
       </div>
 
-      {/* SUMMARY SECTION */}
       <div className='flex bg-[#fff] rounded-md shadow-md px-[20px] py-[20px] gap-[20px]'>
         <div className='border-right border-gray-300 pl-[20px]'>
           <p className='text-gray-400 text-[15px] font-bold'>Total Asset Value</p>
@@ -117,7 +114,6 @@ const Inventory = () => {
         </div>
       </div>
 
-      {/* FILTERS + TABLE */}
       <div className='bg-white p-[20px] mt-[5px]'>
         <div className='flex justify-between items-center'>
           <input type='text' placeholder='Search' className='px-[10px] py-[5px] w-[250px] border border-gray-200 rounded-md' />
@@ -145,7 +141,6 @@ const Inventory = () => {
           </div>
         </div>
 
-        {/* TABLE */}
         <table className="w-full text-sm text-left">
           <thead className="text-gray-500 font-medium bg-[#F6F6F6]">
             <tr>
@@ -209,7 +204,6 @@ const Inventory = () => {
           </tbody>
         </table>
 
-        {/* PAGINATION */}
         <div className='flex items-center justify-between mt-[20px]'>
           <div className='flex items-center'>
             <p className='text-[15px] font-bold'>Showing 1 - 10 of {inventoryData.length} entries</p>
@@ -231,7 +225,6 @@ const Inventory = () => {
         </div>
       </div>
 
-      {/* MODAL */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => {

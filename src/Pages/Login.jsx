@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ import navigation
+import { useNavigate } from 'react-router-dom';
 import '../index.css';
 import inventoryImage from '../assets/inventoryImage.jpg';
 import bgImg from '../assets/bgImg.png';
@@ -56,10 +56,7 @@ const Login = () => {
 
           {error && <p className="text-red-500">{error}</p>}
 
-          <button
-            onClick={handleLogin}
-            className='bg-[#1f316f] text-white font-semibold px-[50px] py-[10px] rounded-md'
-          >
+          <button onClick={handleLogin} className='bg-[#1f316f] text-white font-semibold px-[50px] py-[10px] rounded-md'>
             LOG IN
           </button>
         </div>
