@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../index.css';
 import inventoryImage from '../assets/inventoryImage.jpg';
@@ -11,9 +11,19 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // 🚀 Check if user is already logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn === "true") {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   const handleLogin = () => {
     if (username === userData.username && password === userData.password) {
       setError("");
+      // ✅ store login state
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/dashboard");
     } else {
       setError("Invalid username or password");
@@ -38,7 +48,7 @@ const Login = () => {
             <div>
               <p>Username:</p>
               <input
-                className='rounded-full p-[2px] border-[2px] border-[#1f316f] w-[350px]'
+                className='rounded-full p-[2px] border-[2px] border-[#1f316f] w-[350px] pl-[10px]'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -46,7 +56,7 @@ const Login = () => {
             <div>
               <p>Password:</p>
               <input
-                className='rounded-full p-[2px] border-[2px] border-[#1f316f] w-[350px]'
+                className='rounded-full p-[2px] border-[2px] border-[#1f316f] w-[350px] pl-[10px]'
                 type='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -56,7 +66,10 @@ const Login = () => {
 
           {error && <p className="text-red-500">{error}</p>}
 
-          <button onClick={handleLogin} className='bg-[#1f316f] text-white font-semibold px-[50px] py-[10px] rounded-md'>
+          <button 
+            onClick={handleLogin} 
+            className='bg-[#1f316f] text-white font-semibold px-[50px] py-[10px] rounded-md'
+          >
             LOG IN
           </button>
         </div>

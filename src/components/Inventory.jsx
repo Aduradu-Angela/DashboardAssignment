@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { IoIosNotifications } from "react-icons/io";
 import { CiLock } from "react-icons/ci";
 import '../index.css';
-import inventoryDataJson from '../data/inventoryData.json';
+import inventoryDataJson from '../data/inventoryData';
 import Modal from './Modal';
+import { useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+
+
 
 const statusStyles = {
   green: "text-green-700 bg-green-100",
@@ -17,6 +22,8 @@ const Inventory = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+  const navigate = useNavigate();
+
 
   const [formData, setFormData] = useState({
     productName: "",
@@ -53,6 +60,32 @@ const Inventory = () => {
     setIsModalOpen(false);
   };
 
+    const handleExportPDF = () => {
+    const table = document.getElementById("inventoryTable"); // target table by ID
+    html2canvas(table).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 190;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 10;
+
+      pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save("inventory.pdf");
+    });
+  };
+
+
   return (
     <div className="ml-[300px] bg-[#F6F6F6]">
       <nav className='flex justify-between items-center bg-[#F6F6F6] p-[10px]'>
@@ -67,7 +100,7 @@ const Inventory = () => {
         <p className='font-bold text-2xl'>Inventory</p>
         <div className='flex gap-[10px]'>
           <button className='bg-[#fff] font-bold p-[8px] rounded-md border border-gray-200'>Import</button>
-          <button className='bg-[#fff] font-bold p-[8px] rounded-md border border-gray-200'>Export</button>
+          <button onClick={handleExportPDF} className='bg-[#fff] font-bold p-[8px] rounded-md border border-gray-200'>Export</button>
           <button
             onClick={() => {
               setIsEditMode(false);
@@ -141,7 +174,7 @@ const Inventory = () => {
           </div>
         </div>
 
-        <table className="w-full text-sm text-left">
+        <table id="inventoryTable" className="w-full text-sm text-left">
           <thead className="text-gray-500 font-medium bg-[#F6F6F6]">
             <tr>
               <th className='pl-[15px] py-2'><input type="checkbox" /></th>
@@ -159,7 +192,15 @@ const Inventory = () => {
             {inventoryData.map((item, index) => (
               <tr key={index} className="bg-white shadow-sm rounded-md relative">
                 <td className="pl-[15px] py-2"><input type="checkbox" /></td>
-                <td className="py-2">{item.productName}</td>
+                <td className="py-2 flex items-center space-x-3">
+                  <img 
+                    src={item.image} 
+                    alt={item.productName} 
+                    className="w-[28px] h-[28px] rounded-full object-cover"
+                  />
+                  <span className="font-medium">{item.productName}</span>
+                </td>
+
                 <td className="py-2">{item.category}</td>
                 <td className="py-2">{item.sku}</td>
                 <td className="py-2">{item.incoming}</td>
@@ -169,33 +210,36 @@ const Inventory = () => {
                     {item.status}
                   </span>
                 </td>
-                                <td className="py-2">${item.price}</td>
+                    <td className="py-2">${item.price}</td>
                 <td className="py-2 relative">
                   <button onClick={() => setActiveMenuIndex(index)} className="text-xl">⋯</button>
                   {activeMenuIndex === index && (
                     <div className="absolute right-0 mt-2 w-[100px] bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                      <button
-                        className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                      <button className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={() => {
                           const updatedList = inventoryData.filter((_, i) => i !== index);
                           setInventoryData(updatedList);
                           setActiveMenuIndex(null);
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                        }}> Delete</button>
+                      <button className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={() => {
                           setFormData(item);
                           setEditIndex(index);
                           setIsEditMode(true);
                           setIsModalOpen(true);
                           setActiveMenuIndex(null);
+                        }}>Update</button>
+                      <button
+                        className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={() => {
+                          navigate(`/view/${item.sku}`);
+                          setActiveMenuIndex(null);
                         }}
                       >
-                        Update
+                        View
                       </button>
+
+
                     </div>
                   )}
                 </td>
