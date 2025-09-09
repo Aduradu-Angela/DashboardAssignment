@@ -62,8 +62,16 @@ const Inventory = () => {
 
     const handleExportPDF = () => {
     const table = document.getElementById("inventoryTable"); // target table by ID
+    //Uses html2canvas to convert the table into a canvas.
     html2canvas(table).then((canvas) => {
+      //Converts the canvas into an image (base64 PNG).
       const imgData = canvas.toDataURL("image/png");
+      /*
+      Creates a new PDF:
+      "p" = portrait orientation
+      "mm" = millimeters
+      "a4" = A4 paper size
+       */
       const pdf = new jsPDF("p", "mm", "a4");
       const imgWidth = 190;
       const pageHeight = 295;
@@ -71,9 +79,11 @@ const Inventory = () => {
       let heightLeft = imgHeight;
       let position = 10;
 
+      //This adds the image to the PDF and decreases the remaining height.
       pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
 
+      //and if the image happens to be bigger than one page it adds a new page.
       while (heightLeft > 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
@@ -81,6 +91,7 @@ const Inventory = () => {
         heightLeft -= pageHeight;
       }
 
+      //this is the name thhat the pdf will be saved as
       pdf.save("inventory.pdf");
     });
   };

@@ -9,9 +9,10 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
 
-  // 🚀 Check if user is already logged in
+  // Check if user is already logged in
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn === "true") {
@@ -20,24 +21,28 @@ const Login = () => {
   }, [navigate]);
 
   const handleLogin = () => {
-    if (username === userData.username && password === userData.password) {
-      setError("");
-      // ✅ store login state
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/dashboard");
-    } else {
-      setError("Invalid username or password");
-    }
+    setLoading(true); 
+    setError(""); 
+
+    setTimeout(() => {
+      if (username === userData.username && password === userData.password) {
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/dashboard");
+      } else {
+        setError("Invalid username or password");
+        setLoading(false); 
+      }
+    }, 2000);
   };
 
   return (
-    <div className='grid grid-cols-2 h-full'>
+    <div className='relative grid grid-cols-2 h-full'>
       <div
         style={{ backgroundImage: `url(${inventoryImage})` }}
         className='bg-cover bg-center bg-no-repeat'
       ></div>
 
-      <div
+     <div
         style={{ backgroundImage: `url(${bgImg})` }}
         className='bg-cover bg-center bg-no-repeat flex items-center justify-center h-[739px]'
       >
@@ -74,6 +79,13 @@ const Login = () => {
           </button>
         </div>
       </div>
+
+      {/* Loader */}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
     </div>
   );
 };
